@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/techdeals}
+    username: ${DATABASE_USER:techdeals}
+    password: ${DATABASE_PASSWORD:techdeals}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:dGVjaGRlYWxzLXNlY3JldC1rZXktY2hhbmdlLWluLXByb2R1Y3Rpb24tbWluLTI1Ni1iaXRz}
+  expiration: 86400000
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:4173}
