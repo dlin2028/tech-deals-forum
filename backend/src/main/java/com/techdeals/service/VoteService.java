@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -91,13 +89,6 @@ public class VoteService {
     }
 
     private void recalculateHotScore(Deal deal) {
-        if (deal.getCreatedAt() == null) {
-            deal.setHotScore(0.0);
-            return;
-        }
-        long hoursSincePost = Duration.between(deal.getCreatedAt(), LocalDateTime.now()).toHours();
-        double score = (deal.getUpvoteCount() - deal.getDownvoteCount()) /
-            Math.pow(hoursSincePost + 2, 1.8);
-        deal.setHotScore(score);
+        deal.recalculateHotScore();
     }
 }

@@ -1,5 +1,6 @@
 package com.techdeals.service;
 
+import com.techdeals.model.Deal;
 import com.techdeals.repository.DealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +26,13 @@ public class PriceUpdateScheduler {
     public void updatePricesAndScores() {
         log.info("Running scheduled hot score update...");
         int page = 0;
-        Page<?> batch;
+        Page<Deal> batch;
         do {
             batch = dealRepository.findByIsActiveTrue(PageRequest.of(page++, BATCH_SIZE));
             batch.getContent().forEach(deal -> {
-                var d = (com.techdeals.model.Deal) deal;
-                dealService.recalculateHotScore(d);
-                dealRepository.save(d);
-                elasticsearchSyncService.updateDealScores(d);
+                dealService.recalculateHotScore(deal);
+                dealRepository.save(deal);
+                elasticsearchSyncService.updateDealScores(deal);
             });
         } while (batch.hasNext());
         log.info("Hot score update complete.");

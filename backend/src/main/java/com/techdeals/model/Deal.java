@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,4 +68,13 @@ public class Deal {
 
     @Builder.Default
     private double hotScore = 0.0;
+
+    public void recalculateHotScore() {
+        if (this.createdAt == null) {
+            this.hotScore = 0.0;
+            return;
+        }
+        long hoursSincePost = Duration.between(this.createdAt, LocalDateTime.now()).toHours();
+        this.hotScore = (this.upvoteCount - this.downvoteCount) / Math.pow(hoursSincePost + 2, 1.8);
+    }
 }

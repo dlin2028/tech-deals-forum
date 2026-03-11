@@ -23,10 +23,9 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -139,7 +138,7 @@ public class DealService {
                         .map(deal -> convertToResponse(deal, null))
                         .orElse(null);
                 })
-                .filter(r -> r != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
             return new PageImpl<>(responses, pageable, hits.getTotalHits());
@@ -195,7 +194,7 @@ public class DealService {
                         .map(deal -> convertToResponse(deal, username))
                         .orElse(null);
                 })
-                .filter(r -> r != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
             return new PageImpl<>(responses, pageable, hits.getTotalHits());
@@ -206,14 +205,7 @@ public class DealService {
     }
 
     public void recalculateHotScore(Deal deal) {
-        if (deal.getCreatedAt() == null) {
-            deal.setHotScore(0.0);
-            return;
-        }
-        long hoursSincePost = Duration.between(deal.getCreatedAt(), LocalDateTime.now()).toHours();
-        double score = (deal.getUpvoteCount() - deal.getDownvoteCount()) /
-            Math.pow(hoursSincePost + 2, 1.8);
-        deal.setHotScore(score);
+        deal.recalculateHotScore();
     }
 
     public DealResponse convertToResponse(Deal deal, String username) {

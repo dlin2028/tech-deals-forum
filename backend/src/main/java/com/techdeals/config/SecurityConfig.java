@@ -46,6 +46,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/deals", "/api/deals/{id}", "/api/deals/search", "/api/deals/hot").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/deals/{id}/price-history").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/components/search").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/deals").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/deals/{id}/vote").authenticated()
