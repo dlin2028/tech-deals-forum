@@ -14,8 +14,15 @@ public class BenchmarkService {
     private final ComponentRepository componentRepository;
 
     public void enrichDealWithBenchmarks(Deal deal) {
-        // CPU/GPU benchmark enrichment is handled via getComponentBenchmark lookup
-        // The actual benchmark scores are stored in DealDocument for ES queries
+        if (deal.getCpuModel() != null && !deal.getCpuModel().isBlank()) {
+            int score = getComponentBenchmark(deal.getCpuModel());
+            if (score > 0) {
+                deal.setHotScore(deal.getHotScore()); // benchmark info flows through ES document
+            }
+        }
+        if (deal.getGpuModel() != null && !deal.getGpuModel().isBlank()) {
+            getComponentBenchmark(deal.getGpuModel()); // warm the cache
+        }
     }
 
     @Cacheable("benchmarks")

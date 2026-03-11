@@ -13,6 +13,7 @@ import com.techdeals.repository.DealRepository;
 import com.techdeals.repository.UserRepository;
 import com.techdeals.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class DealService {
 
     private final DealRepository dealRepository;
@@ -143,6 +145,7 @@ public class DealService {
 
             return new PageImpl<>(responses, pageable, hits.getTotalHits());
         } catch (Exception e) {
+            log.warn("Elasticsearch search failed, falling back to JPA", e);
             return dealRepository.findByIsActiveTrue(pageable)
                 .map(deal -> convertToResponse(deal, null));
         }
@@ -199,6 +202,7 @@ public class DealService {
 
             return new PageImpl<>(responses, pageable, hits.getTotalHits());
         } catch (Exception e) {
+            log.warn("Elasticsearch personalized feed failed, falling back to JPA", e);
             return dealRepository.findByIsActiveTrue(pageable)
                 .map(deal -> convertToResponse(deal, username));
         }

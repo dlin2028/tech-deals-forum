@@ -1,5 +1,6 @@
 package com.techdeals.service;
 
+import com.techdeals.exception.BadRequestException;
 import com.techdeals.exception.DuplicateVoteException;
 import com.techdeals.exception.ResourceNotFoundException;
 import com.techdeals.model.Deal;
@@ -31,7 +32,12 @@ public class VoteService {
         Deal deal = dealRepository.findById(dealId)
             .orElseThrow(() -> new ResourceNotFoundException("Deal not found: " + dealId));
 
-        VoteType voteType = VoteType.valueOf(voteTypeStr.toUpperCase());
+        VoteType voteType;
+        try {
+            voteType = VoteType.valueOf(voteTypeStr.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("Invalid vote type. Must be UP or DOWN.");
+        }
         Optional<Vote> existingVote = voteRepository.findByUserIdAndDealId(user.getId(), dealId);
 
         if (existingVote.isPresent()) {
