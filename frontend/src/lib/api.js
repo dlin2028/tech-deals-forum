@@ -23,7 +23,7 @@ export const api = {
     feed: () => instance.get('/deals/feed'),
     get: (id) => instance.get(`/deals/${id}`),
     create: (data) => instance.post('/deals', data),
-    vote: (id, voteType) => instance.post(`/deals/${id}/vote`, { vote_type: voteType }),
+    vote: (id, voteType) => instance.post(`/deals/${id}/vote`, { vote_type: voteType.toUpperCase().replace('VOTE', '') }),
     removeVote: (id) => instance.delete(`/deals/${id}/vote`),
     priceHistory: (id) => instance.get(`/deals/${id}/price-history`)
   },

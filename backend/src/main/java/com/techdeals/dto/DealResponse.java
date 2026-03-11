@@ -17,7 +17,7 @@ public class DealResponse {
     private Long id;
     private String title;
     private String description;
-    private String url;
+    private String dealUrl;
     private BigDecimal price;
     private String retailer;
     private String category;
@@ -25,8 +25,8 @@ public class DealResponse {
     private Long postedById;
     private String postedByUsername;
     private LocalDateTime createdAt;
-    private int upvoteCount;
-    private int downvoteCount;
+    private int upvotes;
+    private int downvotes;
     private boolean isActive;
     private Map<String, String> specs;
     private String cpuModel;

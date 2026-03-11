@@ -13,6 +13,11 @@
   let auth;
   authStore.subscribe(v => auth = v);
 
+  // Normalize backend UP/DOWN to frontend upvote/downvote
+  $: normalizedVote = userVote
+    ? (userVote === 'UP' || userVote === 'upvote' ? 'upvote' : 'downvote')
+    : null;
+
   async function vote(voteType) {
     if (!auth.token) {
       window.location.href = '/login';
@@ -23,13 +28,13 @@
 
     const prev = userVote;
     // Optimistic update
-    if (userVote === voteType) {
+    if (normalizedVote === voteType) {
       if (voteType === 'upvote') upvotes--;
       else downvotes--;
       userVote = null;
     } else {
-      if (userVote === 'upvote') upvotes--;
-      if (userVote === 'downvote') downvotes--;
+      if (normalizedVote === 'upvote') upvotes--;
+      if (normalizedVote === 'downvote') downvotes--;
       if (voteType === 'upvote') upvotes++;
       else downvotes++;
       userVote = voteType;
@@ -56,7 +61,7 @@
   <button
     on:click={() => vote('upvote')}
     class="flex items-center gap-1 px-2 py-1 rounded-lg transition-all
-      {userVote === 'upvote' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'}"
+      {normalizedVote === 'upvote' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'}"
     disabled={loading}
   >
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +72,7 @@
   <button
     on:click={() => vote('downvote')}
     class="flex items-center gap-1 px-2 py-1 rounded-lg transition-all
-      {userVote === 'downvote' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'}"
+      {normalizedVote === 'downvote' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'}"
     disabled={loading}
   >
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,4 +1,8 @@
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/techdeals}
     username: ${DATABASE_USER:techdeals}

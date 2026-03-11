@@ -44,11 +44,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        // Resolve username from email for Spring Security authentication
+        User user = userService.findByEmail(request.getEmail())
+            .orElseThrow(() -> new com.techdeals.exception.BadRequestException("Invalid email or password"));
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword())
         );
         String token = jwtTokenProvider.generateToken(authentication);
-        User user = (User) authentication.getPrincipal();
         return ResponseEntity.ok(
             AuthResponse.builder()
                 .token(token)

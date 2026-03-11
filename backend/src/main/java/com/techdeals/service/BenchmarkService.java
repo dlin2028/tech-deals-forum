@@ -15,10 +15,7 @@ public class BenchmarkService {
 
     public void enrichDealWithBenchmarks(Deal deal) {
         if (deal.getCpuModel() != null && !deal.getCpuModel().isBlank()) {
-            int score = getComponentBenchmark(deal.getCpuModel());
-            if (score > 0) {
-                deal.setHotScore(deal.getHotScore()); // benchmark info flows through ES document
-            }
+            getComponentBenchmark(deal.getCpuModel()); // warm the cache
         }
         if (deal.getGpuModel() != null && !deal.getGpuModel().isBlank()) {
             getComponentBenchmark(deal.getGpuModel()); // warm the cache
