@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PriceUpdateScheduler {
 
     private final DealRepository dealRepository;
-    private final DealService dealService;
     private final ElasticsearchSyncService elasticsearchSyncService;
 
     private static final int BATCH_SIZE = 100;
@@ -30,7 +29,7 @@ public class PriceUpdateScheduler {
         do {
             batch = dealRepository.findByIsActiveTrue(PageRequest.of(page++, BATCH_SIZE));
             batch.getContent().forEach(deal -> {
-                dealService.recalculateHotScore(deal);
+                deal.recalculateHotScore();
                 dealRepository.save(deal);
                 elasticsearchSyncService.updateDealScores(deal);
             });

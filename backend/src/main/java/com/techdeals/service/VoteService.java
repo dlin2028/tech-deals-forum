@@ -62,7 +62,7 @@ public class VoteService {
             }
         }
 
-        recalculateHotScore(deal);
+        deal.recalculateHotScore();
         dealRepository.save(deal);
         elasticsearchSyncService.updateDealScores(deal);
     }
@@ -83,12 +83,8 @@ public class VoteService {
         }
 
         voteRepository.delete(vote);
-        recalculateHotScore(deal);
+        deal.recalculateHotScore();
         dealRepository.save(deal);
         elasticsearchSyncService.updateDealScores(deal);
-    }
-
-    private void recalculateHotScore(Deal deal) {
-        deal.recalculateHotScore();
     }
 }

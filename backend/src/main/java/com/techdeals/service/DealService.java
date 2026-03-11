@@ -61,7 +61,7 @@ public class DealService {
 
         benchmarkService.enrichDealWithBenchmarks(deal);
         deal = dealRepository.save(deal);
-        recalculateHotScore(deal);
+        deal.recalculateHotScore();
         deal = dealRepository.save(deal);
         elasticsearchSyncService.indexDeal(deal);
 
@@ -202,10 +202,6 @@ public class DealService {
             return dealRepository.findByIsActiveTrue(pageable)
                 .map(deal -> convertToResponse(deal, username));
         }
-    }
-
-    public void recalculateHotScore(Deal deal) {
-        deal.recalculateHotScore();
     }
 
     public DealResponse convertToResponse(Deal deal, String username) {
